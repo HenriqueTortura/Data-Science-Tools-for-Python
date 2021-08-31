@@ -44,7 +44,7 @@ def Plot_Empirical_Cumulative_Distribution_Function(data, label):
     plt.xlabel('x (cm)', fontsize = 22)
     plt.ylabel('F(x)', fontsize = 22)
     plt.ylim(0,1)
-    plt.savefig(label+'ECDF.png', dpi=200, bbox_inches='tight')
+    plt.savefig(str.replace(label, ' ', '_')+'ECDF.png', dpi=200, bbox_inches='tight')
     
 # Percorrendo para os diferentes subconjuntos de dados
 for i in range(len(iris['feature_names'])):
