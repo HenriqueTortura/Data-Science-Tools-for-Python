@@ -10,12 +10,12 @@ labels = [feature.capitalize()[:-4] for feature in iris['feature_names']]
 #%% Boxplots
 plt.figure(figsize=(16,9))
 
-plt.boxplot(iris["data"], labels = labels)
+plt.boxplot(iris['data'], labels = labels)
 
 plt.grid()
 plt.xticks(fontsize = 18)
 plt.yticks(fontsize = 14)
-plt.ylabel("cm", fontsize = 18)
+plt.ylabel('cm', fontsize = 18)
 plt.savefig('box_plot.png', dpi=200, bbox_inches='tight')
 
 #%% Cumulative Distribution Functions
