@@ -40,23 +40,29 @@ def Plot_Histogram(data, i, n, label, bins = 50):
                     dpi=200, bbox_inches='tight')
 
 #%%
-m = 10**6
-n = 5
+m = 10**6 # Número de execuções
+n = 5 # Número de partições
 
-x = np.zeros((n,m))
-delta = np.zeros((n,m))
+x = np.zeros((n,m)) # Vetor de pontos (que guarda x_0=0)
+delta = np.zeros((n,m)) # Vetor de partições
 
-for j in range(m):
-    for i in range(1,n):
-        # print(x[i-1,j])
+for j in range(m): # Percorre execuções
+    for i in range(1,n): # Percorre cada sorteio de pontos
+    
+        # Sorteio dada a distribuição condicional uniforme
         x[i,j] = np.random.uniform(low=x[i-1,j]+np.nextafter(0.0, 1.0), high=1.0)
         
+        # Cáclulo do tamanho das partições intermediárias
         delta[i-1,j] = x[i,j] - x[i-1,j]
     
+    # Cálculo da partição final
     delta[i,j] = 1 - x[i,j]
         
         
 #%%
-i = 4
-a = delta[i,:]
-Plot_Histogram(delta[i,:], i+1, n, 'delta')
+for i in range(n):
+    if i != 0:
+        Plot_Histogram(x[i,:], i,
+                       n, 'x')
+    Plot_Histogram(delta[i,:], i+1,# "Corrige" indexação do Python
+                   n, 'delta')
