@@ -6,7 +6,78 @@ import matplotlib.animation as animation
 import time
 
 #%%
-def Plot_Rho(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, label, frame=3):
+def Simple_Plot(mu_x, mu_y, sigma_x, sigma_y, rho, k, frame=3):
+    
+    # Definindo pontos da elipse
+    x_lim = [mu_x-frame, mu_x+frame]
+    y_lim = [mu_y-frame, mu_y+frame]
+    x = np.linspace(x_lim[0], x_lim[1], 1000)
+    y = np.linspace(y_lim[0], y_lim[1], 1000)
+    X,Y = np.meshgrid(x,y)
+    
+    # Plot
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(16,8))
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+    # plt.tight_layout()
+    fig.subplots_adjust(left=0.08, bottom=0.08, right=0.98, top=0.98)
+    
+    # Plot (x,y)
+    ax.set_xlim(x_lim)
+    ax.set_ylim(y_lim)
+    ax.set_xlabel(r'$x$', fontsize=26)
+    ax.set_ylabel(r'$y$', fontsize=26)
+    ax.grid()
+    ax.tick_params(axis='both', which='major', labelsize=22)
+    
+    # Cálculo dos autovalores e autovetores
+    delta = np.sqrt((sigma_x**2-sigma_y**2)**2 + 4*(rho*sigma_x*sigma_y)**2)
+    lambda_minus = ((sigma_x**2+sigma_y**2) - delta) / 2
+    lambda_plus = ((sigma_x**2+sigma_y**2) + delta) / 2
+    
+    # Equação da elipse
+    eqn = ((X-mu_x)/sigma_x)**2 + ((Y-mu_y)/sigma_y)**2 - 2*rho*((X-mu_x)/sigma_x)*((Y-mu_y)/sigma_y)
+    A = -2* (1-rho**2)* np.log( 2*np.pi* k* sigma_x*sigma_y*np.sqrt(1-rho**2) )
+    
+    # Plot elipse
+    ax.contour(X,Y,eqn,[A], cmap='winter', linewidths=3)
+    
+    # Plot (t,w)
+    # Definindo pontos da elipse
+    t_lim = [-frame, +frame]
+    w_lim = [-frame, +frame]
+    t = np.linspace(t_lim[0], t_lim[1], 1000)
+    w = np.linspace(w_lim[0], w_lim[1], 1000)
+    T,W = np.meshgrid(t,w)
+    
+    eqn2 = T**2/(A * sigma_x**2 * sigma_y**2 / lambda_plus) + W**2/(A * sigma_x**2 * sigma_y**2 / lambda_minus)
+    
+    s1 = np.sqrt(A * sigma_x**2 * sigma_y**2 / lambda_plus)
+    s2 = np.sqrt(A * sigma_x**2 * sigma_y**2 / lambda_minus)
+    
+    ax2.set_xlim(t_lim)
+    ax2.set_ylim(w_lim)
+    ax2.set_xlabel(r'$t$', fontsize=26)
+    ax2.set_ylabel(r'$w$', fontsize=26)
+    ax2.grid()
+    ax2.tick_params(axis='both', which='major', labelsize=22)
+    
+    ax2.contour(T, W, eqn2, [1], cmap='autumn', linewidths=3)
+    ax2.hlines(y=0, xmin=-s1, xmax=s1, linewidth=2.5, color=colors[1])
+    ax2.vlines(x=0, ymin=-s2, ymax=s2, linewidth=2.5, color=colors[2])
+    ax2.text(0.5*s1, 0.1*s2, r'$2s_1$',
+            size = 22, verticalalignment='center', horizontalalignment='left',
+            color=colors[1], bbox={'facecolor': 'white', 'alpha': 0.5,
+                                        'pad': 0.2, 'boxstyle': 'round'})
+    ax2.text(0.1*s1, 0.5*s2, r'$2s_2$',
+            size = 22, verticalalignment='center', horizontalalignment='left',
+            color=colors[2], bbox={'facecolor': 'white', 'alpha': 0.5,
+                                        'pad': 0.2, 'boxstyle': 'round'})
+
+    plt.savefig('img/ellipse.png',
+                    dpi=200, bbox_inches='tight')
+    
+#%%
+def Plot_Animation(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, label, frame=3):
     
     # Definindo pontos da elipse
     x_lim = [-frame, frame]
@@ -45,11 +116,6 @@ def Plot_Rho(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, label, f
                                      [sigma_x*sigma_y*rho/np.sqrt((lambda_minus-sigma_y**2)**2+(sigma_x*sigma_y*rho)**2)]])
         eigenvector_plus = np.array([[(lambda_plus-sigma_y**2)/np.sqrt((lambda_plus-sigma_y**2)**2+(sigma_x*sigma_y*rho)**2)],
                                      [sigma_x*sigma_y*rho/np.sqrt((lambda_plus-sigma_y**2)**2+(sigma_x*sigma_y*rho)**2)]])
-
-            # eigenvector_minus = np.array([[sigma_x*sigma_y*rho/np.sqrt((lambda_minus-sigma_x)**2+(sigma_x*sigma_y*rho)**2)],
-            #                               [(lambda_minus-sigma_y)/np.sqrt((lambda_minus-sigma_x)**2+(sigma_x*sigma_y*rho)**2)]])
-            # eigenvector_plus = np.array([[(lambda_plus-sigma_y)/np.sqrt((lambda_plus-sigma_y)**2+(sigma_x*sigma_y*rho)**2)],
-            #                              [sigma_x*sigma_y*rho/np.sqrt((lambda_plus-sigma_x)**2+(sigma_x*sigma_y*rho)**2)]])
 
         # Equação da elipse
         eqn = ((X-mu_x)/sigma_x)**2 + ((Y-mu_y)/sigma_y)**2 - 2*rho*((X-mu_x)/sigma_x)*((Y-mu_y)/sigma_y)
@@ -115,14 +181,20 @@ def yes_or_no(question): #Straight from https://stackoverflow.com/questions/4773
 
 p = 2 # Bivariada
 
-mu_x = 0
-mu_y = 0
+mu_x = 1
+mu_y = -2
+sigma_x = 1.25
+sigma_y = 1.5
+rho = 0.5
+ 
+k = 0.015
 
-k = 0.01
+
+Simple_Plot(mu_x, mu_y, sigma_x, sigma_y, rho, k, frame=3.5)
 
 
 #%% Variando rho
-if yes_or_no('\n Variar $\rho$ ?'):
+if yes_or_no(r'\n Variar $\rho$ ?'):
     
     rho_values = np.linspace(0.01, 0.99, num=100)
     sigma_x_values = np.ones(np.size(rho_values)) * 1.5
@@ -130,14 +202,14 @@ if yes_or_no('\n Variar $\rho$ ?'):
     
     start = time.time()
     
-    Plot_Rho(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, 'Rho', frame=4.5)
+    Plot_Animation(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, 'Rho', frame=4.5)
     
     end =  time.time() 
     
     print(end-start)
 
 #%% Variando sigma_x
-if yes_or_no('\n Variar $\sigma_x$ ?'):
+if yes_or_no(r'\n Variar $\sigma_x$ ?'):
 
     sigma_x_values = np.linspace(0.5, 5, num=100)
     rho_values = np.ones(np.size(sigma_x_values))*0.5
@@ -145,7 +217,7 @@ if yes_or_no('\n Variar $\sigma_x$ ?'):
     
     start = time.time()
     
-    Plot_Rho(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, 'Sigma_x', frame=8)
+    Plot_Animation(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, 'Sigma_x', frame=8)
     
     end =  time.time()
     
@@ -153,7 +225,7 @@ if yes_or_no('\n Variar $\sigma_x$ ?'):
 
 #%% Variando sigma_y
 
-if yes_or_no('\n Variar $\sigma_y$ ?'):
+if yes_or_no(r'\n Variar $\sigma_y$ ?'):
     
     sigma_y_values = np.linspace(0.5, 5, num=100)
     rho_values = np.ones(np.size(sigma_y_values))*0.5
@@ -161,7 +233,7 @@ if yes_or_no('\n Variar $\sigma_y$ ?'):
     
     start = time.time()
     
-    Plot_Rho(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, 'Sigma_y', frame=8)
+    Plot_Animation(mu_x, mu_y, sigma_x_values, sigma_y_values, rho_values, k, 'Sigma_y', frame=8)
 
     end =  time.time()
 
