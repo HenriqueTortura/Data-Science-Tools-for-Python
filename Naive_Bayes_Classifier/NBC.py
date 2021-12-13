@@ -212,10 +212,6 @@ X = np.array(data.values[:,:-1].T, dtype=float)
 
 P = np.zeros((np.size(np.unique(data['species'])), np.size(X, axis=1)))
 
-x = X[:,50]
-
-#%% Classificação
-
 # Percorre dados
 for i in range(np.size(X, axis=1)):
 # for i in [50, 51, 145]:
@@ -275,16 +271,16 @@ upper_lim = 1.05
 
 y = np.linspace(lower_lim, upper_lim)
 
-plt.scatter(dados[0,:int(np.size(dados, axis=1)/2)],
-            dados[1,:int(np.size(dados, axis=1)/2)], label = 'versicolor',
-            linewidths=2, edgecolors='black',
-            facecolor=colors[0],
-            zorder = 2, s=100)
-
 plt.scatter(dados[0,int(np.size(dados, axis=1)/2):],
             dados[1,int(np.size(dados, axis=1)/2):], label = 'virginica',
             linewidths=2, edgecolors='black',
             facecolor=colors[1],
+            zorder = 2, s=100)
+
+plt.scatter(dados[0,:int(np.size(dados, axis=1)/2)],
+            dados[1,:int(np.size(dados, axis=1)/2)], label = 'versicolor',
+            linewidths=2, edgecolors='black',
+            facecolor=colors[0],
             zorder = 2, s=100)
 
 plt.plot(y,y, c='black', linewidth=3)
