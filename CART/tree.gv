@@ -1,0 +1,51 @@
+digraph g {
+	node [height=.1 shape=record]
+	node [shape=ellipse]
+	0 [label="Ramificação
+Amostras: 24
+Income <= 59.7
+Impureza de Gini Total: 0.359" fillcolor="#dec7a2" style=filled]
+	node [shape=ellipse]
+	1 [label="Ramificação
+Amostras: 8
+Lot_Size <= 21.4
+Impureza de Gini Total: 0.000" fillcolor="#dec7a2" style=filled]
+	node [shape=ellipse]
+	2 [label="Ramificação
+Amostras: 16
+Lot_Size <= 19.8
+Impureza de Gini Total: 0.278" fillcolor="#dec7a2" style=filled]
+	node [shape=box]
+	3 [label="Folha
+Amostras: 7
+Classe: Nonowner" fillcolor="#d8e3aa" style=filled]
+	node [shape=box]
+	4 [label="Folha
+Amostras: 1
+Classe: Owner" fillcolor="#aae3d7" style=filled]
+	node [shape=ellipse]
+	5 [label="Ramificação
+Amostras: 9
+Income <= 84.75
+Impureza de Gini Total: 0.185" fillcolor="#dec7a2" style=filled]
+	node [shape=box]
+	6 [label="Folha
+Amostras: 7
+Classe: Owner" fillcolor="#aae3d7" style=filled]
+	node [shape=box]
+	7 [label="Folha
+Amostras: 6
+Classe: Nonowner" fillcolor="#d8e3aa" style=filled]
+	node [shape=box]
+	8 [label="Folha
+Amostras: 3
+Classe: Owner" fillcolor="#aae3d7" style=filled]
+	0 -> 1
+	0 -> 2
+	1 -> 3
+	1 -> 4
+	2 -> 5
+	2 -> 6
+	5 -> 7
+	5 -> 8
+}
